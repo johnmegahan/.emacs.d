@@ -1,0 +1,327 @@
+#+TITLE: Emacs Configuration (JCM)
+#+AUTHOR: Johnny Megahan
+
+* Bootstrap
+
+** Settings
+#+BEGIN_SRC emacs-lisp
+  (setq
+   auto-window-vscroll t                           ; Normalize vertical scroll offset
+   confirm-kill-emacs 'yes-or-no-p                 ; Confirm before exiting Emacs
+   cursor-in-non-selected-windows t                ; Hide the cursor in inactive windows
+   delete-by-moving-to-trash t                     ; Delete files to trash
+   display-time-default-load-average nil           ; Don't display load average
+   display-time-format "%H:%M"                     ; Format the time string
+   fill-column 80                                  ; Set width for automatic line breaking
+   gc-cons-threshold most-positive-fixnum          ; Increase garbage collector treshold
+   help-window-select t                            ; Focus new help windows when opened
+   indent-tabs-mode nil                            ; Stop using tabs to indent
+   initial-major-mode 'org-mode                    ; Start in Org mode for quick notes
+   initial-scratch-message ""                      ; Empty the initial *scratch* buffer
+   inhibit-startup-screen t                        ; Disable start-up screen
+   mouse-yank-at-point t                           ; Yank at point rather than cursor
+   require-final-newline 'visit                    ; Add a newline at EOF on visit
+   scroll-step 1                                   ; Fix the scroll line step
+   show-trailing-whitespace nil                    ; Display trailing whitespaces
+   split-height-threshold nil                      ; Disable vertical window splitting
+   split-width-threshold nil                       ; Disable horizontal window splitting
+   tab-width 4                                     ; Set width for tabs
+   uniquify-buffer-name-style 'forward             ; Uniquify buffer names
+   window-combination-resize t                     ; Resize windows proportionally
+   x-select-enable-clipboard t)                    ; Merge system's and Emacs' clipboard
+#+END_SRC
+
+
+** UI
+#+BEGIN_SRC emacs-lisp
+  (when window-system
+    (scroll-bar-mode 0)                            ; Disable the scroll bar
+    (tool-bar-mode 0)                              ; Disable the tool bar
+    (tooltip-mode 0))                              ; Disable the tooltips
+  (column-number-mode 1)                           ; Show the column number
+  (display-battery-mode 0)                         ; Hide the battery level
+  (display-time-mode 1)                            ; Hide the time representation
+  (fringe-mode '(10 . 10))                         ; Show vertical fringes
+  (global-hl-line-mode 1)                          ; Hightlight current line
+  (global-subword-mode 1)                          ; Iterate through CamelCase words
+  (line-number-mode 1)                             ; Show the line number
+  (menu-bar-mode 0)                                ; Disable the menu bar
+  (mouse-avoidance-mode 'animate)                  ; Avoid pointer/point collision
+  (set-frame-parameter nil 'fullscreen 'fullboth)  ; Enable fullscreen mode
+  (show-paren-mode 1)                              ; Show matching parens pairs  
+#+END_SRC
+
+
+** Other
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)                    ; Replace yes/no prompts with y/n
+#+END_SRC
+
+Reset garbage collector treshold after initialization is finished and
+=garbage-collect= on focus-out. Emacs /should/ feel snappier, I do however
+experience long garbage collects when returning to the Emacs frame.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'after-init-hook (lambda () (setq gc-cons-threshold 800000)))
+(add-hook 'focus-out-hook 'garbage-collect)
+#+END_SRC
+
+
+** Font
+#+BEGIN_SRC emacs-lisp
+(defvar jcm/font-family            "Hack"    "The font to use.")
+(defvar jcm/font-size-default      240       "The font size to use for default text.")
+(defvar jcm/font-size-header       280       "The font size to use for headers.")
+(defvar jcm/font-size-mode-line    240       "The font size to use for the mode line.")
+(setq org-src-fontify-natively t)
+(add-to-list 'default-frame-alist '(font . "Hack-24"))
+(set-face-attribute 'default t :font "Hack-24")
+#+END_SRC
+
+
+** Load =.custom.el=
+
+When you modify emacs through the UI, it wants to save those modifications somewhere.
+To keep this file clean, I move those to a different file.
+#+BEGIN_SRC emacs-lisp
+(setq-default custom-file (expand-file-name ".custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
+#+END_SRC
+
+
+** Load =.secret.el=
+
+I load =~/.emacs.d/.secret.el= to keep sensible things out of version control.
+For instance, you could set your identity by customizing both =user-full-name= and
+=user-mail-address= in this file.
+
+#+BEGIN_SRC emacs-lisp
+(let ((secret.el (expand-file-name ".secret.el" user-emacs-directory)))
+  (when (file-exists-p secret.el)
+    (load secret.el)))
+#+END_SRC
+
+
+** Package Manager
+
+Since I pull in my theme from the package manager, I have to get that set up first
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (setq package-enable-at-startup nil)
+  (add-to-list 'package-archives
+               '("marmalade" . "http://marmalade-repo.org/packages/"))
+  (add-to-list 'package-archives
+               '("melpa" . "https://melpa.org/packages/"))
+  (package-initialize)
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+#+END_SRC
+
+You can run into all kinds of problems on OSX where the path is wronge.
+
+#+BEGIN_SRC emacs-lisp
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize)))
+#+END_SRC
+
+
+* Theme
+Right now I like to use greduan's port of the [[https://github.com/greduan/emacs-theme-gruvbox][Gruvbox]] theme. Unfortunately there's
+no light mode right now but i'm hoping to add it at some point.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package gruvbox-theme
+    :ensure t
+    :config (load-theme 'gruvbox t))
+#+END_SRC
+
+
+* Navigation
+
+** Completion
+
+I use Ivy as my completion frontend
+#+BEGIN_SRC emacs-lisp
+(use-package ivy
+  :ensure t
+  :diminish (ivy-mode)
+  :bind ("C-x b" . ivy-switch-buffer)
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-display-style 'fancy)
+  (setq ivy-extra-directories nil)
+  (setq ivy-height 10)
+  (setq ivy-count-format "(%d/%d) "))
+#+END_SRC
+
+Counsel provides ivy-based versions of emacs commands
+#+BEGIN_SRC emacs-lisp
+(use-package counsel
+  :ensure t
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x C-f" . counsel-find-file)
+	 ("C-c g" . counsel-git)
+	 ("C-c j" . counsel-git-grep)
+	 ("C-c k" . counsel-ag)
+	 ("C-x l" . counsel-locate)
+	 ("C-S-o" . counsel-rhythmbox)))
+(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+#+END_SRC
+
+
+** Search
+
+Swiper is an i-search replacement that uses ivy
+#+BEGIN_SRC emacs-lisp
+(use-package swiper
+  :ensure t
+  :bind ("C-s" . swiper))
+#+END_SRC
+
+
+** On-screen
+
+On-screen navigation is a little different. I use Avy for that.
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :ensure t
+  :bind ("M-s" . avy-goto-char-timer))
+#+END_SRC
+
+
+* Languages
+
+** General
+
+A lot of teams I'm on use EditorConfig to keep project-based configs
+#+BEGIN_SRC emacs-lisp
+(use-package editorconfig
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook (editorconfig-mode 1))
+  (add-hook 'text-mode-hook (editorconfig-mode 1)))
+#+END_SRC
+
+I use flycheck for syntax checking
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+  :ensure t
+  :config
+  (global-flycheck-mode))
+#+END_SRC
+
+I use company for code completion
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :config
+  (add-hook 'after-init-hook 'global-company-mode))
+#+END_SRC
+
+
+** EcmaScript
+
+I spend my time day-to-day in JavaScript/EcmaScript and so right now that is where the majority of my packages go.
+
+js2-mode is best at node stuff right now
+#+BEGIN_SRC emacs-lisp
+  (use-package js2-mode
+    :ensure t
+    :mode "\\.js\\'"
+    :interpreter "node"
+    :config
+    (setq-default
+     js2-include-node-externs t
+     js2-mode-show-parse-errors nil
+     setq-default js2-highlight-level 3)
+    (js2-mode-hide-warnings-and-errors))
+#+END_SRC
+
+I use tern for my js code completion backend.
+#+BEGIN_SRC emacs-lisp
+(use-package tern
+  :config (add-hook 'js2-mode-hook 'tern-mode))
+
+(use-package company-tern
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-tern))
+#+END_SRC
+
+
+** Mustache Templates
+
+#+BEGIN_SRC emacs-lisp
+(use-package mustache-mode
+  :ensure t)
+#+END_SRC
+
+
+* Source Control
+
+Magit
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :ensure t)
+#+END_SRC
+
+
+* Project Management
+
+Projectile
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-global-mode))
+
+(use-package counsel-projectile
+  :ensure t)
+#+END_SRC
+
+
+* Snippets
+
+yasnippets are in the =snippets= folder by default
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
+#+END_SRC
+
+
+* Browser
+
+I use w3m.
+#+BEGIN_SRC emacs-lisp
+(use-package w3m
+  :ensure t
+  :bind ("C-x m" . browse-url-at-point))
+
+(setq browse-url-browser-function 'w3m-browse-url)
+(setq w3m-use-cookies t)
+(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+#+END_SRC
+
+
+* RSS
+
+#+BEGIN_SRC emacs-lisp
+(use-package elfeed
+  :ensure t)
+
+(use-package elfeed-org
+  :ensure t
+  :config
+  (elfeed-org)
+  (setq rmh-elfeed-org-files (list "~/org/rss-feeds.org")))
+#+END_SRC

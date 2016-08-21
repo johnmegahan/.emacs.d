@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: Function Declaration
+# key: f
+# --
+function ${1:name} (${2:args}) {
+    $0
+}

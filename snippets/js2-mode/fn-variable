@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: Function Variable
+# key: fv
+# --
+var ${1:name} = function $1 (${2:args}) {
+    $0
+}
