@@ -2,4 +2,4 @@
 (setq org-confirm-babel-evaluate nil
       vc-follow-symlinks nil)
 
-(org-babel-load-file "~/Projects/.emacs.d/readme.org")
+(org-babel-load-file "~/.emacs.d/readme.org")
