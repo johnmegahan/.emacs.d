@@ -19,6 +19,7 @@
    initial-major-mode 'org-mode                    ; Start in Org mode for quick notes
    initial-scratch-message ""                      ; Empty the initial *scratch* buffer
    inhibit-startup-screen t                        ; Disable start-up screen
+   make-backup-files nil                           ; Backups annoy me and I use git
    mouse-yank-at-point t                           ; Yank at point rather than cursor
    require-final-newline 'visit                    ; Add a newline at EOF on visit
    scroll-step 1                                   ; Fix the scroll line step
