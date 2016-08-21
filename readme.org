@@ -3,6 +3,10 @@
 
 * Bootstrap
 
+This is my standard Emacs config. The =init.el= file tangles this using org and loads it.
+Generally, I'll have already installed nvm. Until I can figure out a better way, you should
+go into the =/tern= folder and run =npm install= before loading Emacs.
+
 ** Settings
 #+BEGIN_SRC emacs-lisp
   (setq
