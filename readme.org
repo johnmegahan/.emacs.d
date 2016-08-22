@@ -1,11 +1,14 @@
 #+TITLE: Emacs Configuration (JCM)
 #+AUTHOR: Johnny Megahan
 
-* Bootstrap
+This is my Emacs configuration, which is certainly in it's early days. The
+=init.el= file tangles this file using org and loads it as configuration. I use
+this repository by cloning it to my home folder. Generally, I'll have already
+installed nvm. Until I can figure out a better way, after cloning this, you
+should go into the =/tern= folder and run =npm install= to install tern's
+dependencies.
 
-This is my standard Emacs config. The =init.el= file tangles this using org and loads it.
-Generally, I'll have already installed nvm. Until I can figure out a better way, you should
-go into the =/tern= folder and run =npm install= before loading Emacs.
+* Bootstrap
 
 ** Settings
 #+BEGIN_SRC emacs-lisp
@@ -53,7 +56,7 @@ go into the =/tern= folder and run =npm install= before loading Emacs.
   (menu-bar-mode 0)                                ; Disable the menu bar
   (mouse-avoidance-mode 'animate)                  ; Avoid pointer/point collision
   (set-frame-parameter nil 'fullscreen 'fullboth)  ; Enable fullscreen mode
-  (show-paren-mode 1)                              ; Show matching parens pairs  
+  (show-paren-mode 1)                              ; Show matching parens pairs
 #+END_SRC
 
 
