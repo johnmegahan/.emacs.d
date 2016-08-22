@@ -275,7 +275,8 @@ I use tern for my js code completion backend.
 Magit
 #+BEGIN_SRC emacs-lisp
 (use-package magit
-  :ensure t)
+  :ensure t
+  :bind ("C-x g" . magit-status))
 #+END_SRC
 
 
