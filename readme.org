@@ -77,13 +77,13 @@ experience long garbage collects when returning to the Emacs frame.
 
 ** Font
 #+BEGIN_SRC emacs-lisp
-(defvar jcm/font-family            "Hack"    "The font to use.")
+(defvar jcm/font-family            "Hasklig" "The font to use.")
 (defvar jcm/font-size-default      240       "The font size to use for default text.")
 (defvar jcm/font-size-header       280       "The font size to use for headers.")
 (defvar jcm/font-size-mode-line    240       "The font size to use for the mode line.")
 (setq org-src-fontify-natively t)
-(add-to-list 'default-frame-alist '(font . "Hack-24"))
-(set-face-attribute 'default t :font "Hack-24")
+(add-to-list 'default-frame-alist '(font . "Hasklig-24"))
+(set-face-attribute 'default t :font "Hasklig-24")
 #+END_SRC
 
 
@@ -234,6 +234,16 @@ I use company for code completion
   (add-hook 'after-init-hook 'global-company-mode))
 #+END_SRC
 
+Prettify
+#+BEGIN_SRC emacs-lisp
+  (setq prettify-symbols-alist
+	'(("===" . (decode-char 'ucs #XE108))
+          ("lambda" . 955) ; λ
+          ("->" . 8594)    ; →
+          ("=>" . 8658)    ; ⇒
+          ))
+#+END_SRC
+
 
 ** EcmaScript
 
@@ -264,6 +274,54 @@ I use tern for my js code completion backend.
   (add-to-list 'company-backends 'company-tern))
 #+END_SRC
 
+
+** PureScript
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'purescript-mode-hook
+	    (lambda ()
+	      (setq prettify-symbols-alist
+		    '(
+		      ("&&"   . #XE100)
+		      ("***"  . #XE101)
+		      ("*>"   . #XE102)
+		      ("\\\\" . #XE103)
+		      ("||"   . #XE104)
+		      ("|>"   . #XE105)
+		      ("::"   . #XE106)
+		      ("=="   . #XE107)
+		      ("==="  . #XE108)
+		      ("==>"  . #XE109)
+		      ("=>"   . #XE10A)
+		      ("=<<"  . #XE10B)
+		      ("!!"   . #XE10C)
+		      (">>"   . #XE10D)
+		      (">>="  . #XE10E)
+		      (">>>"  . #XE10F)
+		      (">>-"  . #XE110)
+		      (">-"   . #XE111)
+		      ("->"   . #XE112)
+		      ("-<"   . #XE113)
+		      ("-<<"  . #XE114)
+		      ("<*"   . #XE115)
+		      ("<*>"  . #XE116)
+		      ("<|"   . #XE117)
+		      ("<|>"  . #XE118)
+		      ("<$>"  . #XE119)
+		      ("<>"   . #XE11A)
+		      ("<-"   . #XE11B)
+		      ("<<"   . #XE11C)
+		      ("<<<"  . #XE11D)
+		      ("<+>"  . #XE11E)
+		      (".."   . #XE11F)
+		      ("..."  . #XE120)
+		      ("++"   . #XE121)
+		      ("+++"  . #XE122)
+		      ("/="   . #XE123)
+		      ))))
+  (add-hook 'purescript-mode-hook 'prettify-symbols-mode)
+  (add-hook 'purescript-mode-hook 'purescript-indentation-mode)
+
+#+END_SRC
 
 ** Mustache Templates
 
