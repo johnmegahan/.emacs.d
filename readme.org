@@ -366,19 +366,6 @@ yasnippets are in the =snippets= folder by default
 #+END_SRC
 
 
-* Browser
-
-I use w3m.
-#+BEGIN_SRC emacs-lisp
-(use-package w3m
-  :ensure t
-  :bind ("C-x m" . browse-url-at-point))
-
-(setq browse-url-browser-function 'w3m-browse-url)
-(setq w3m-use-cookies t)
-(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
-#+END_SRC
-
 
 * RSS
 
