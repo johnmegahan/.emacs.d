@@ -27,6 +27,7 @@ dependencies.
    initial-scratch-message ""                      ; Empty the initial *scratch* buffer
    inhibit-startup-screen t                        ; Disable start-up screen
    make-backup-files nil                           ; Backups annoy me and I use git
+   auto-save-default nil                           ; No temp files either
    mouse-yank-at-point t                           ; Yank at point rather than cursor
    require-final-newline 'visit                    ; Add a newline at EOF on visit
    scroll-step 1                                   ; Fix the scroll line step
@@ -55,7 +56,7 @@ dependencies.
   (line-number-mode 1)                             ; Show the line number
   (menu-bar-mode 0)                                ; Disable the menu bar
   (mouse-avoidance-mode 'animate)                  ; Avoid pointer/point collision
-  (set-frame-parameter nil 'fullscreen 'fullboth)  ; Enable fullscreen mode
+;  (set-frame-parameter nil 'fullscreen 'fullboth)  ; Enable fullscreen mode
   (show-paren-mode 1)                              ; Show matching parens pairs
 #+END_SRC
 
