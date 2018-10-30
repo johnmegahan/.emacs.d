@@ -257,11 +257,14 @@ js2-mode is best at node stuff right now
     :interpreter "node"
     :config
     (setq-default
-     js2-include-node-externs t
-     js2-mode-show-parse-errors nil
-     setq-default js2-highlight-level 3)
+      js2-include-node-externs t
+      js2-mode-show-parse-errors nil
+      js2-highlight-level 3)
     (js2-mode-hide-warnings-and-errors))
 #+END_SRC
+
+#+RESULTS:
+: ((node . js2-mode) (ruby1.8 . ruby-mode) (ruby1.9 . ruby-mode) (jruby . ruby-mode) (rbx . ruby-mode) (ruby . ruby-mode) (python[0-9.]* . python-mode) (rhino . js-mode) (gjs . js-mode) (nodejs . js-mode) (node . js-mode) (gawk . awk-mode) (nawk . awk-mode) (mawk . awk-mode) (awk . awk-mode) (pike . pike-mode) (\(mini\)?perl5? . perl-mode) (wishx? . tcl-mode) (tcl\(sh\)? . tcl-mode) (expect . tcl-mode) (octave . octave-mode) (scm . scheme-mode) ([acjkwz]sh . sh-mode) (r?bash2? . sh-mode) (dash . sh-mode) (mksh . sh-mode) (\(dt\|pd\|w\)ksh . sh-mode) (es . sh-mode) (i?tcsh . sh-mode) (oash . sh-mode) (rc . sh-mode) (rpm . sh-mode) (sh5? . sh-mode) (tail . text-mode) (more . text-mode) (less . text-mode) (pg . text-mode) (make . makefile-gmake-mode) (guile . scheme-mode) (clisp . lisp-mode) (emacs . emacs-lisp-mode))
 
 I use tern for my js code completion backend.
 #+BEGIN_SRC emacs-lisp
